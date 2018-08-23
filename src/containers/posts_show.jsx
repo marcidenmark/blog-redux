@@ -5,11 +5,9 @@ import { bindActionCreators } from 'redux';
 import { fetchPosts } from '../actions';
 import { fetchPost } from '../actions';
 
-
-
 class PostsShow extends Component {
 
-	componentWillMount() {
+	componentDidMount() {
 		// CHECK IF POST IS NOT ALREADY THERE.
 		if (!this.props.post) {
 			this.props.fetchPost(this.props.match.params.id);
@@ -35,6 +33,18 @@ class PostsShow extends Component {
 			);
 	}
 }
+function mapStateToProps(reduxState, ownProps) {
+	const idFromUrl = parseInt(ownProps.match.params.id, 10);
+	const post = state.posts.find(p => p.id === idFromUrl);
+	return { post };
+}
+
+function mapDispatchToProps(dispatch) {
+	return bindActionCreators({ fetchPost }, dispatch);
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(PostsShow);
+
 // below, the second parameter is new.
 // id is the parameter from the route.-- the id from the params
 // it's a string coming from the url
@@ -51,14 +61,3 @@ class PostsShow extends Component {
 // the ownProps is a second parameter-- redux gives this to us.-- the props of the connected component.
 // the name after the .match is the name you put in the params in the index.jsx
 // this is like the controller in rails being assigned as an instant variable in the view. (minute 110 in lecture)
-function mapStateToProps(reduxState, ownProps) {
-	const idFromUrl = parseInt(ownProps.match.params.id, 10);
-	const post = state.posts.find(p => p.id === idFromUrl);
-	return { post };
-}
-
-function mapDispatchToProps(dispatch) {
-	return bindActionCreators({ fetchPost }, dispatch);
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(PostsShow);
